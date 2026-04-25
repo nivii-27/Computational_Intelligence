@@ -1,0 +1,104 @@
+import math
+
+def a_search(graph, start, goal, h):
+    O_list = [start]
+    visited = []
+    parent = {start: None}
+    cost = {start: 0} # g(n)
+
+    print(f"\n{'='*10} Starting A* Search {'='*10}")
+
+    step = 1
+    while O_list:
+        print(f"\nStep {step}:")
+        
+        # --- Show f(n) for ALL nodes in the Open List ---
+        print("Evaluating Open List:")
+        node_evaluations = []
+        for node in O_list:
+            g = cost[node]
+            h_val = h.get(node, float('inf'))
+            f = g + h_val
+            node_evaluations.append((f, node, g, h_val))
+            print(f"  Node '{node}': f(n) = {g} + {h_val} = {f}")
+
+        # --- Select the node with the lowest f(n) ---
+        # Sorting allows us to clearly pick the best
+        node_evaluations.sort() 
+        best_f, current, current_g, current_h = node_evaluations[0]
+
+        print(f">> Selected for expansion: '{current}' with lowest f(n) = {best_f}")
+        # -----------------------------------------------
+
+        if current == goal:
+            print("\nGoal Reached!")
+            print_solution(goal, parent, cost[goal])
+            return True
+
+        O_list.remove(current)
+        visited.append(current)
+
+        for neighbor, weight in graph.get(current, []):
+            if neighbor in visited:
+                continue
+
+            new_g = cost[current] + weight
+
+            if neighbor not in cost or new_g < cost[neighbor]:
+                cost[neighbor] = new_g
+                parent[neighbor] = current
+                if neighbor not in O_list:
+                    O_list.append(neighbor)
+                    print(f"    -> Discovered: {neighbor} (g={new_g})")
+                else:
+                    print(f"    -> Updated: {neighbor} (better g={new_g})")
+
+        step += 1
+
+    print("\nPath not found.")
+    return False
+
+def print_solution(goal, parent, total_cost):
+    path = []
+    curr = goal
+    while curr is not None:
+        path.append(curr)
+        curr = parent[curr]
+    path.reverse()
+    print("-" * 30)
+    print(f"Shortest Path: {' -> '.join(path)}")
+    print(f"Total Cost:    {total_cost}")
+    print("-" * 30)
+
+def get_user_input():
+    graph = {}
+    h_values = {}
+    try:
+        print("--- Graph Definition ---")
+        num_edges = int(input("Enter number of edges: "))
+        print("Enter (Source Destination Weight):")
+        for _ in range(num_edges):
+            u, v, w = input().split()
+            if u not in graph: graph[u] = []
+            graph[u].append((v, int(w)))
+            if v not in graph: graph[v] = []
+            
+        print("\n--- Heuristic Values ---")
+        print("Enter (Node Value). Type 'done' to finish.")
+        while True:
+            entry = input()
+            if entry.lower() == 'done': break
+            node, val = entry.split()
+            h_values[node] = int(val)
+
+        start_node = input("\nStart Node: ")
+        goal_node = input("Goal Node: ")
+        return graph, start_node, goal_node, h_values
+    except Exception as e:
+        print(f"Input Error: {e}")
+        return None
+
+if __name__ == "__main__":
+    data = get_user_input()
+    if data:
+        a_search(*data)
