@@ -1,0 +1,26 @@
+(defun scientific-calculator ()
+  "A simple terminal-based scientific calculator."
+  (format t "--- Scientific Calculator ---~%")
+  (force-output) ; <--- Add this
+  (loop
+    (format t "~%Options: (+, -, *, /, sin, cos, tan, sqrt, expt, exit)~%")
+    (format t "Enter operation: ")
+    (force-output) ; <--- Add this
+    (let ((op (read)))
+      (cond
+        ((eq op 'exit) (return "Goodbye!"))
+        
+        ((member op '(sin cos tan sqrt))
+         (format t "Enter number: ")
+         (force-output) ; <--- Add this
+         (let ((num (read)))
+           (format t "Result: ~f~%" (funcall op num))))
+        
+        ((member op '(+ - * / expt))
+         (format t "Enter two numbers (space separated): ")
+         (force-output) ; <--- Add this
+         (let ((n1 (read))
+               (n2 (read)))
+           (format t "Result: ~f~%" (funcall op n1 n2))))
+        
+        (t (format t "Unknown operation. Please try again.~%"))))))

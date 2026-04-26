@@ -1,0 +1,55 @@
+(defun my-gcd (a b)
+  "Finds Greatest Common Divisor using Euclidean algorithm."
+  (if (= b 0)
+      a
+      (my-gcd b (rem a b))))
+
+(defun my-lcm (a b)
+  "Finds Least Common Multiple using the GCD."
+  (if (or (= a 0) (= b 0))
+      0
+      (abs (/ (* a b) (my-gcd a b)))))
+
+(defun math-tools ()
+  (format t "~%--- Math Tools Menu ---")
+  (format t "~%1. Area & Perimeter (Rectangle)")
+  (format t "~%2. GCD of two numbers")
+  (format t "~%3. LCM of two numbers")
+  (format t "~%Enter choice (1-3): ")
+  (force-output) ; Crucial for LispWorks to show the prompt immediately
+  (let ((choice (read)))
+    (cond
+      ;; OPTION 1: AREA AND PERIMETER
+      ((= choice 1)
+       (format t "Enter length: ")
+       (force-output)
+       (let ((l (read)))
+         (format t "Enter width: ")
+         (force-output)
+         (let ((w (read)))
+           (format t "~%[Results for Rectangle]~%")
+           (format t "Area: ~a~%" (* l w))
+           (format t "Perimeter: ~a~%" (* 2 (+ l w))))))
+      
+      ;; OPTION 2: GCD
+      ((= choice 2)
+       (format t "Enter first number: ")
+       (force-output)
+       (let ((a (read)))
+         (format t "Enter second number: ")
+         (force-output)
+         (let ((b (read)))
+           (format t "GCD: ~a~%" (my-gcd a b)))))
+      
+      ;; OPTION 3: LCM
+      ((= choice 3)
+       (format t "Enter first number: ")
+       (force-output)
+       (let ((a (read)))
+         (format t "Enter second number: ")
+         (force-output)
+         (let ((b (read)))
+           (format t "LCM: ~a~%" (my-lcm a b)))))
+      
+      (t (format t "Invalid choice. Please run (math-tools) again.~%"))))
+  (values)) ; Cleans up the output in the Listener

@@ -1,0 +1,25 @@
+(defun slen (str)
+  "1. Length: Counts each character in the string."
+  (let ((count 0))
+    (loop for char across str
+          do (setf count (+ count 1)))
+    count))
+
+(defun srev (str)
+  "2. Reverse: Reverses string by reading from end to start."
+  (let* ((len (slen str))
+         (new (make-string len)))
+    (loop for i from 0 to (- len 1)
+          do (setf (char new i) 
+                   (char str (- len 1 i))))
+    new))
+
+(defun spal (str)
+  "3. Palindrome: Checks if the string reads the same forward and backward."
+  (let* ((len (slen str))
+         (is-pal T)) ; 
+    (loop for i from 0 to (/ len 2)
+          do (unless (char= (char str i) 
+                            (char str (- len 1 i)))
+               (setf is-pal nil)))
+    is-pal))
